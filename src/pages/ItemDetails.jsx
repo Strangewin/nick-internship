@@ -5,10 +5,10 @@ import EthImage from "../images/ethereum.svg";
 import { Link } from "react-router-dom";
 import AuthorImage from "../images/author_thumbnail.jpg";
 import nftImage from "../images/nftImage.jpg";
-import "./ItemDetails.css"; 
+import "./ItemDetails.css";
 
 const ItemDetails = () => {
-  const { id } = useParams();
+  const { id: nftId } = useParams();
   const [collection, setCollection] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,11 +20,19 @@ const ItemDetails = () => {
       try {
         setLoading(true);
 
-        const { data } = await axios.get('https://us-central1-nft-cloud-functions.cloudfunctions.net/hotCollections');
-        const foundCollection = data.find(item => item.id.toString() === id);
+       
+        const { data: newItemsData } = await axios.get('https://us-central1-nft-cloud-functions.cloudfunctions.net/newItems');
+        let foundCollection = newItemsData.find(item => item.nftId.toString() === nftId);
+
+       
+        if (!foundCollection) {
+          const { data: hotCollectionsData } = await axios.get('https://us-central1-nft-cloud-functions.cloudfunctions.net/hotCollections');
+          foundCollection = hotCollectionsData.find(item => item.nftId?.toString() === nftId || item.id?.toString() === nftId);
+        }
 
         if (foundCollection) {
           setCollection(foundCollection);
+          setError(null);
         } else {
           setError('Collection not found');
         }
@@ -36,10 +44,10 @@ const ItemDetails = () => {
       }
     };
 
-    if (id) {
+    if (nftId) {
       fetchCollectionDetails();
     }
-  }, [id]);
+  }, [nftId]);
 
   if (loading) {
     return (
