@@ -74,7 +74,7 @@ return (
       <div className="row">
         <div className="col-lg-12">
           <div className="text-center">
-            <h2>New Items</h2>
+            <h2  data-aos-delay="100" data-aos="fade-in">New Items</h2>
             <div className="small-border bg-color-2"></div>
           </div>
         </div>
@@ -100,7 +100,7 @@ return (
             ))}
           </div>
         ) : (
-          <OwlCarousel className="owl-theme" {...owlOptions}>
+          <OwlCarousel className="owl-theme"   data-aos-delay="100" data-aos="fade-in"{...owlOptions}>
             {items.map((item, index) => (
               <div className="item" key={item.id || index}>
                 <div className="nft__item">

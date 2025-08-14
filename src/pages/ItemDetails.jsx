@@ -19,82 +19,66 @@ const ItemDetails = () => {
     const fetchItemDetails = async () => {
       try {
         setLoading(true);
-        
-        
-        
-       
+
         const itemDetailsUrl = `https://us-central1-nft-cloud-functions.cloudfunctions.net/itemDetails?nftid=${nftId}`;
-        console.log('Trying itemDetails URL:', itemDetailsUrl);
-        
+        console.log("Trying itemDetails URL:", itemDetailsUrl);
+
         try {
           const { data } = await axios.get(itemDetailsUrl);
-          console.log('ItemDetails API Response:', data);
-          console.log('Response type:', typeof data);
-          console.log('Response keys:', Object.keys(data || {}));
-          
+
           if (data && Object.keys(data).length > 0) {
             setItemDetails(data);
             setError(null);
             return;
           }
-        } catch (itemDetailsError) {
-          console.log('ItemDetails API failed:', itemDetailsError.response?.status, itemDetailsError.message);
-        }
-        
-       
-        console.log('ItemDetails API returned empty, trying alternatives...');
-        
-        
-        const alternatives = [
+        } catch (itemDetailsError) {}
 
+        const alternatives = [
           `https://us-central1-nft-cloud-functions.cloudfunctions.net/itemDetails?nftId=${nftId}`,
-         
         ];
-        
+
         for (let url of alternatives) {
           try {
-            console.log('Trying alternative URL:', url);
+            console.log("Trying alternative URL:", url);
             const { data } = await axios.get(url);
-            console.log('Alternative API Response:', data);
+            console.log("Alternative API Response:", data);
             if (data && Object.keys(data).length > 0) {
               setItemDetails(data);
               setError(null);
               return;
             }
           } catch (altError) {
-            console.log('Alternative URL failed:', url, altError.response?.status);
+            console.log(
+              "Alternative URL failed:",
+              url,
+              altError.response?.status
+            );
           }
         }
-        
 
-        console.log('All itemDetails attempts failed, trying fallback...');
-        
+        console.log("All itemDetails attempts failed, trying fallback...");
+
         try {
-       
-          const { data: hotCollectionsData } = await axios.get('https://us-central1-nft-cloud-functions.cloudfunctions.net/hotCollections');
-          console.log('HotCollections fallback data:', hotCollectionsData);
-          
-          const foundItem = hotCollectionsData.find(item => 
-            item.nftId?.toString() === nftId || 
-            item.id?.toString() === nftId
+          const { data: hotCollectionsData } = await axios.get(
+            "https://us-central1-nft-cloud-functions.cloudfunctions.net/hotCollections"
           );
-          
+          console.log("HotCollections fallback data:", hotCollectionsData);
+
+          const foundItem = hotCollectionsData.find(
+            (item) =>
+              item.nftId?.toString() === nftId || item.id?.toString() === nftId
+          );
+
           if (foundItem) {
-           
             setItemDetails(foundItem);
             setError(null);
             return;
           }
-        } catch (fallbackError) {
-          
-        }
-        
-       
-        setError('Item not found in any API');
-        
+        } catch (fallbackError) {}
+
+        setError("Item not found in any API");
       } catch (err) {
-        setError('Error fetching item details');
-        
+        setError("Error fetching item details");
       } finally {
         setLoading(false);
       }
@@ -103,7 +87,7 @@ const ItemDetails = () => {
     if (nftId) {
       fetchItemDetails();
     } else {
-      setError('No NFT ID provided');
+      setError("No NFT ID provided");
       setLoading(false);
     }
   }, [nftId]);
@@ -139,7 +123,9 @@ const ItemDetails = () => {
                 <div className="col-md-12 text-center">
                   <h2>Error: {error}</h2>
                   <p>NFT ID: {nftId}</p>
-                  <Link to="/" className="btn-main">Go Back Home</Link>
+                  <Link to="/" className="btn-main">
+                    Go Back Home
+                  </Link>
                 </div>
               </div>
             </div>
@@ -178,27 +164,49 @@ const ItemDetails = () => {
                     </div>
                   </div>
                   <p>
-                    {itemDetails?.description || 
-                    `NFT ID: ${itemDetails?.nftId || itemDetails?.id || nftId} | 
-                    A unique digital collectible from the ${itemDetails?.title} collection.`}
+                    {itemDetails?.description ||
+                      `NFT ID: ${
+                        itemDetails?.nftId || itemDetails?.id || nftId
+                      } | 
+                    A unique digital collectible from the ${
+                      itemDetails?.title
+                    } collection.`}
                   </p>
                   <div className="d-flex flex-row">
                     <div className="mr40">
                       <h6>Owner</h6>
                       <div className="item_author">
                         <div className="author_list_pp">
-                          <Link to={`/author/${itemDetails?.ownerId || itemDetails?.authorId}`}>
-                            <img 
-                              className="lazy" 
-                              src={itemDetails?.ownerImage || itemDetails?.authorImage || AuthorImage} 
-                              alt="" 
+                          <Link
+                            to={`/author/${
+                              itemDetails?.ownerId || itemDetails?.authorId
+                            }`}
+                          >
+                            <img
+                              className="lazy"
+                              src={
+                                itemDetails?.ownerImage ||
+                                itemDetails?.authorImage ||
+                                AuthorImage
+                              }
+                              alt=""
                             />
                             <i className="fa fa-check"></i>
                           </Link>
                         </div>
                         <div className="author_list_info">
-                          <Link to={`/author/${itemDetails?.ownerId || itemDetails?.authorId}`}>
-                            {itemDetails?.ownerName || itemDetails?.authorName || `Owner #${itemDetails?.ownerId || itemDetails?.authorId || "Unknown"}`}
+                          <Link
+                            to={`/author/${
+                              itemDetails?.ownerId || itemDetails?.authorId
+                            }`}
+                          >
+                            {itemDetails?.ownerName ||
+                              itemDetails?.authorName ||
+                              `Owner #${
+                                itemDetails?.ownerId ||
+                                itemDetails?.authorId ||
+                                "Unknown"
+                              }`}
                           </Link>
                         </div>
                       </div>
@@ -209,18 +217,36 @@ const ItemDetails = () => {
                       <h6>Creator</h6>
                       <div className="item_author">
                         <div className="author_list_pp">
-                          <Link to={`/author/${itemDetails?.creatorId || itemDetails?.authorId}`}>
-                            <img 
-                              className="lazy" 
-                              src={itemDetails?.creatorImage || itemDetails?.authorImage || AuthorImage} 
-                              alt="" 
+                          <Link
+                            to={`/author/${
+                              itemDetails?.creatorId || itemDetails?.authorId
+                            }`}
+                          >
+                            <img
+                              className="lazy"
+                              src={
+                                itemDetails?.creatorImage ||
+                                itemDetails?.authorImage ||
+                                AuthorImage
+                              }
+                              alt=""
                             />
                             <i className="fa fa-check"></i>
                           </Link>
                         </div>
                         <div className="author_list_info">
-                          <Link to={`/author/${itemDetails?.creatorId || itemDetails?.authorId}`}>
-                            {itemDetails?.creatorName || itemDetails?.authorName || `Creator #${itemDetails?.creatorId || itemDetails?.authorId || "Unknown"}`}
+                          <Link
+                            to={`/author/${
+                              itemDetails?.creatorId || itemDetails?.authorId
+                            }`}
+                          >
+                            {itemDetails?.creatorName ||
+                              itemDetails?.authorName ||
+                              `Creator #${
+                                itemDetails?.creatorId ||
+                                itemDetails?.authorId ||
+                                "Unknown"
+                              }`}
                           </Link>
                         </div>
                       </div>
@@ -229,7 +255,9 @@ const ItemDetails = () => {
                     <h6>Price</h6>
                     <div className="nft-item-price">
                       <img src={EthImage} alt="" />
-                      <span>{itemDetails?.price || (itemDetails?.code / 100) || 1.85}</span>
+                      <span>
+                        {itemDetails?.price || itemDetails?.code / 100 || 1.85}
+                      </span>
                     </div>
                   </div>
                 </div>
