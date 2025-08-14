@@ -7,6 +7,8 @@ import 'owl.carousel/dist/assets/owl.carousel.css';
 import 'owl.carousel/dist/assets/owl.theme.default.css';
 import OwlCarousel from 'react-owl-carousel';
 import './HotCollections.css';
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 const owlOptions = {
   loop: true,
@@ -37,6 +39,7 @@ const HotCollections = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+     AOS.init({ once: true });
     const fetchCollections = async () => {
       try {
         const { data } = await axios.get(
@@ -60,7 +63,7 @@ const HotCollections = () => {
         <div className="row">
           <div className="col-lg-12">
             <div className="text-center">
-              <h2>Hot Collections</h2>
+              <h2 data-aos-delay="100" data-aos="fade-in">Hot Collections</h2>
               <div className="small-border bg-color-2"></div>
             </div>
           </div>
@@ -86,7 +89,7 @@ const HotCollections = () => {
     ))}
   </div>
 ) : (
-  <OwlCarousel className="owl-theme" {...owlOptions}>
+  <OwlCarousel className="owl-theme"  data-aos-delay="100" data-aos="fade-in"{...owlOptions}>
     {collections.map((collection, index) => (
       <div className="item" key={collection.id || index}>
         <div className="nft_coll">
